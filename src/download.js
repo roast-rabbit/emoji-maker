@@ -43,9 +43,17 @@ document.getElementById("to-svg").addEventListener("click", () => {
 
 let jsonData;
 
-document.getElementById("to-json").addEventListener("click", (e) => {
+document.getElementById("to-json").addEventListener("click", async (e) => {
   jsonData = JSON.stringify(canvas);
-  console.log(jsonData);
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: jsonData,
+  };
+
+  fetch("http://localhost:3001/maker", requestOptions).then((res) => {
+    console.log(res.status);
+  });
   return false;
 });
 document.querySelector("#render-canvas-from-json").addEventListener("click", () => {
@@ -57,13 +65,20 @@ function renderCanvasFromJson(jsonData) {
 }
 
 export function readData() {
-  fetch("http://localhost:3000/canvas")
+  console.log(location);
+  // const urlParams = new URLSearchParams(location.search);
+  // console.log(urlParams);
+
+  // const id = urlParams.get("id");
+  const id = 5;
+
+  fetch(`http://localhost:3001/maker/${id}`)
     .then((res) => {
       return res.json();
     })
     .then((data) => {
-      console.log(data[0]);
-      renderCanvasFromJson(data[0]);
+      console.log(data);
+      renderCanvasFromJson(data);
     });
 }
 
