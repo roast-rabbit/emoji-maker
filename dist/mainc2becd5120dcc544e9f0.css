@@ -1,3 +1,6 @@
+/*!**********************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/css/styles.css ***!
+  \**********************************************************************/
 #container button:hover {
   cursor: pointer;
 }
@@ -165,3 +168,5 @@
   }
 }
 
+
+/*# sourceMappingURL=mainc2becd5120dcc544e9f0.css.map*/
