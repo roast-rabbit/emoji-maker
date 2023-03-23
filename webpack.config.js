@@ -41,6 +41,10 @@ const config = {
           from: path.resolve(__dirname, "src/jquery-2.1.4.min.js"),
           to: path.resolve(__dirname, "dist/jquery-2.1.4.min.js"),
         },
+        {
+          from: path.resolve(__dirname, "src/translate-loading.svg"),
+          to: path.resolve(__dirname, "dist/translate-loading.svg"),
+        },
       ],
     }),
     // new WebpackObfuscator({
