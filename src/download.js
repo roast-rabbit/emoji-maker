@@ -58,11 +58,14 @@ document.getElementById("to-json").addEventListener("click", async (e) => {
   document.querySelector("#to-json .downloading").classList.remove("hide");
 
   save_status = 1;
-  jsonData = JSON.stringify(canvas);
+  jsonData = JSON.stringify({ data: canvas });
+
+  console.log(jsonData);
+
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: { data: jsonData },
+    body: jsonData,
   };
 
   fetch("/en/maker-save", requestOptions)
