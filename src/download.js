@@ -7,6 +7,7 @@ import {
 import axios from "axios";
 import loadSVGs from "./loadSVGs.js";
 import { updateHistory } from "./undo.js";
+import { setCustomObjectBorders } from "./undo.js";
 
 function savePng(uri, name) {
   const link = document.createElement("a");
@@ -70,6 +71,8 @@ function renderCanvasFromJson(jsonData) {
   canvas.clear();
   canvas.loadFromJSON(jsonData, () => {
     canvas.renderAll();
+    setCustomObjectBorders();
+
     setLayerData();
     showCurrentLayerInfo();
     showSelectionOnLayerInfoList();

@@ -39,7 +39,6 @@ const initCanvas = (id) => {
 };
 
 export let canvas = initCanvas("c");
-// canvas.historyInit();
 
 canvas.setBackgroundColor(null, canvas.renderAll.bind(canvas));
 

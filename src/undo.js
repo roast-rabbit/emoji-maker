@@ -93,7 +93,7 @@ export function redo() {
   }
 }
 
-function setCustomObjectBorders() {
+export function setCustomObjectBorders() {
   canvas.getObjects().forEach((object) => {
     object.set({
       borderColor: "#0c8ce9",
