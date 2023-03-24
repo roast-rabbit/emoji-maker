@@ -18,15 +18,10 @@ import "./toggleTab.js";
 import * as DownloadModule from "./download.js";
 import "fabric-history";
 
-const lazyContent = new LazyLoad({
-  // use_native: true // <-- there you go
-});
+// 初始化 懒加载
+const lazyContent = new LazyLoad();
 
-/**
- *
- * @param {string} id
- * @returns new canvas object
- */
+// 初始化canvas
 const initCanvas = (id) => {
   return new fabric.Canvas(id, {
     width: 300,

@@ -50,20 +50,49 @@ document.getElementById("to-svg").addEventListener("click", () => {
 });
 
 let jsonData;
-
+var save_status = 2;
 document.getElementById("to-json").addEventListener("click", async (e) => {
+  if (save_status < 2) {
+    return false;
+  }
+  document.querySelector("#to-json .downloading").classList.remove("hide");
+
+  save_status = 1;
   jsonData = JSON.stringify(canvas);
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: jsonData,
+    body: { data: jsonData },
   };
 
-  fetch("http://localhost:3001/maker", requestOptions).then((res) => {
-    console.log(res.status);
-  });
+  fetch("/en/maker-save", requestOptions)
+    .then((res) => {
+      console.log(res);
+      document.querySelector("#to-json .downloading").classList.add("hide");
+      if (res.code != 200) {
+        toast(res.msg);
+      }
+      save_status = 2;
+    })
+    .catch((err) => {
+      toast(res.msg);
+      save_status = 2;
+    });
   return false;
 });
+
+function toast(text) {
+  document.querySelector(".toast-body p").textContent = text;
+  document.querySelector(".toast").classList.remove("off");
+  document.querySelector(".toast").classList.add("on");
+
+  setTimeout(() => {
+    document.querySelector(".toast-body p").textContent = "";
+    document.querySelector(".toast").classList.remove("on");
+    document.querySelector(".toast").classList.add("off");
+  }, 2000);
+}
+
 document.querySelector("#render-canvas-from-json").addEventListener("click", () => {
   renderCanvasFromJson(jsonData);
 });
