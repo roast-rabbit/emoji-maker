@@ -93,9 +93,9 @@ function toast(text) {
   }, 2000);
 }
 
-document.querySelector("#render-canvas-from-json").addEventListener("click", () => {
-  renderCanvasFromJson(jsonData);
-});
+// document.querySelector("#render-canvas-from-json").addEventListener("click", () => {
+//   renderCanvasFromJson(jsonData);
+// });
 function renderCanvasFromJson(jsonData) {
   canvas.clear();
   canvas.loadFromJSON(jsonData, () => {
