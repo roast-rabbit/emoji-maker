@@ -1,6 +1,12 @@
-import { canvas } from "./index.js";
+import {
+  canvas,
+  setLayerData,
+  showCurrentLayerInfo,
+  showSelectionOnLayerInfoList,
+} from "./index.js";
 import axios from "axios";
 import loadSVGs from "./loadSVGs.js";
+import { updateHistory } from "./undo.js";
 
 function savePng(uri, name) {
   const link = document.createElement("a");
@@ -62,7 +68,13 @@ document.querySelector("#render-canvas-from-json").addEventListener("click", () 
 });
 function renderCanvasFromJson(jsonData) {
   canvas.clear();
-  canvas.loadFromJSON(jsonData);
+  canvas.loadFromJSON(jsonData, () => {
+    canvas.renderAll();
+    setLayerData();
+    showCurrentLayerInfo();
+    showSelectionOnLayerInfoList();
+    updateHistory();
+  });
 }
 
 export async function readData(id) {

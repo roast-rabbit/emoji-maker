@@ -53,7 +53,8 @@ let id = params.get("id");
 
 if (id) {
   id = parseInt(id);
-  console.log(DownloadModule.readData(id));
+  updateHistory();
+  DownloadModule.readData(id);
 } else {
   loadSVGs(canvas);
 }
