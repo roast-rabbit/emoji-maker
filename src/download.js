@@ -1,5 +1,6 @@
 import { canvas } from "./index.js";
 import axios from "axios";
+import loadSVGs from "./loadSVGs.js";
 
 function savePng(uri, name) {
   const link = document.createElement("a");
@@ -64,22 +65,20 @@ function renderCanvasFromJson(jsonData) {
   canvas.loadFromJSON(jsonData);
 }
 
-export function readData() {
-  console.log(location);
-  // const urlParams = new URLSearchParams(location.search);
-  // console.log(urlParams);
-
-  // const id = urlParams.get("id");
-  const id = 5;
-
-  fetch(`http://localhost:3001/maker/${id}`)
+export async function readData(id) {
+  return fetch(`./maker-${id}-data.json`)
     .then((res) => {
+      if (res.status === 404) {
+        throw new Error("file not found");
+      }
       return res.json();
     })
     .then((data) => {
-      console.log(data);
       renderCanvasFromJson(data);
+    })
+    .catch((err) => {
+      loadSVGs(canvas);
     });
 }
 
-readData();
+// readData();

@@ -13,11 +13,9 @@ import "./css/styles.css";
 
 import LazyLoad from "vanilla-lazyload";
 
-
-
 import { currentMode, modes } from "./drawing.js";
 import "./toggleTab.js";
-import "./download.js";
+import * as DownloadModule from "./download.js";
 import "fabric-history";
 
 const lazyContent = new LazyLoad({
@@ -49,7 +47,16 @@ addDeleteControl();
 alterRotationControl(canvas);
 alterScaleControl(canvas);
 
-loadSVGs(canvas);
+// 获取 URL 上面的参数
+let params = new URL(document.location).searchParams;
+let id = params.get("id");
+
+if (id) {
+  id = parseInt(id);
+  console.log(DownloadModule.readData(id));
+} else {
+  loadSVGs(canvas);
+}
 
 // layerData is a global object keeping track when all the layer info changes
 export let layerData;
@@ -139,9 +146,9 @@ export function showCurrentLayerInfo(layerData, newOrder) {
   const obejcts = layerData ? layerData : canvas.getObjects();
   // console.log('obejcts.length:', obejcts.length)
   // console.log(obejcts)
-  if(obejcts[0]=== undefined){
+  if (obejcts[0] === undefined) {
     // console.log(obejcts.length)
-    return
+    return;
   }
   obejcts.forEach((obejct, index) => {
     layerList.insertAdjacentHTML(

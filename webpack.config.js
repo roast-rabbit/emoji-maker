@@ -45,6 +45,18 @@ const config = {
           from: path.resolve(__dirname, "src/translate-loading.svg"),
           to: path.resolve(__dirname, "dist/translate-loading.svg"),
         },
+        {
+          from: path.resolve(__dirname, "src/maker-1-data.json"),
+          to: path.resolve(__dirname, "dist/maker-1-data.json"),
+        },
+        {
+          from: path.resolve(__dirname, "src/maker-2-data.json"),
+          to: path.resolve(__dirname, "dist/maker-2-data.json"),
+        },
+        {
+          from: path.resolve(__dirname, "src/maker-3-data.json"),
+          to: path.resolve(__dirname, "dist/maker-3-data.json"),
+        },
       ],
     }),
     // new WebpackObfuscator({
