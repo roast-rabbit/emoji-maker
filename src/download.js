@@ -70,15 +70,18 @@ document.getElementById("to-json").addEventListener("click", async (e) => {
 
   fetch("/en/maker-save", requestOptions)
     .then((res) => {
-      console.log(res);
+      return res.json();
+    })
+    .then((data) => {
       document.querySelector("#to-json .downloading").classList.add("hide");
-      if (res.code != 200) {
-        toast(res.msg);
+      if (data.code != 200) {
+        toast(data.msg);
       }
       save_status = 2;
     })
     .catch((err) => {
-      toast(res.msg);
+      document.querySelector("#to-json .downloading").classList.add("hide");
+      toast("error");
       save_status = 2;
     });
   return false;
