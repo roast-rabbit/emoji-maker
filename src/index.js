@@ -2,13 +2,14 @@ import addDeleteControl from "./addDeleteControl.js";
 import alterRotationControl from "./alterRotationControl.js";
 import canvasOperations from "./canvasOperations.js";
 import loadSVGs from "./loadSVGs.js";
-import loadSingleSVG from "./loadSingleSVG.js";
+import { loadPositionData } from "./loadPositionData.js";
+
 import alterScaleControl from "./alterScaleControl.js";
 import { makeListItemsDraggable } from "./dragDrop.js";
 import { updateHistory, undo, redo } from "./undo.js";
 import { fabric } from "fabric";
 import "./text.js";
-// import "./css/dict-web.css";
+
 import "./css/styles.css";
 
 import LazyLoad from "vanilla-lazyload";
@@ -17,9 +18,10 @@ import { currentMode, modes } from "./drawing.js";
 import "./toggleTab.js";
 import * as DownloadModule from "./download.js";
 import "fabric-history";
+import { renderAssetMenu } from "./renderAssetMenu.js";
 
 // 初始化 懒加载
-const lazyContent = new LazyLoad();
+// const lazyContent = new LazyLoad();
 
 // 初始化canvas
 const initCanvas = (id) => {
@@ -53,11 +55,25 @@ if (id) {
   loadSVGs(canvas);
 }
 
+export function updateCanvas(newLayerData) {
+  canvas.remove(...canvas.getObjects());
+
+  newLayerData.forEach((layer) => {
+    canvas.add(layer);
+  });
+  updateHistory();
+}
+
+// positionData 读取的是positionData.json 里面的数据
+let positionData;
+
+loadPositionData(positionData, canvas);
+
 // layerData is a global object keeping track when all the layer info changes
 export let layerData;
 
 export function setLayerData(newLayerData, newOrder = [0]) {
-  // order changes, only update order
+  // 顺序变化
   if (!newLayerData) {
     const currentObjects = canvas.getObjects();
     const objectsToSet = newOrder.map((index) => {
@@ -70,62 +86,7 @@ export function setLayerData(newLayerData, newOrder = [0]) {
   }
 }
 
-export function updateCanvas(newLayerData) {
-  canvas.remove(...canvas.getObjects());
-
-  newLayerData.forEach((layer) => {
-    canvas.add(layer);
-  });
-  updateHistory();
-}
-
-// positionData object holds value read from positionData.json file
-let positionData;
-/**
- *
- * @param {*} positionData
- * this function set a global variable positionData object
- */
-const loadPositionData = async function (positionData) {
-  const res = await fetch("./positionData.json");
-  positionData = await res.json();
-  // attach event listeners to each button
-  const buttons = document.querySelectorAll("button.shape");
-  buttons.forEach((button) => {
-    button.addEventListener("click", function () {
-      loadSingleSVG(this.dataset.name, canvas, positionData);
-    });
-  });
-};
-
-loadPositionData(positionData);
-
-let mousePressed = false;
-const setPanEvent = (canvas) => {
-  canvas.on("mouse:move", (event) => {
-    if (mousePressed && currentMode === modes.pan) {
-      canvas.setCursor("grab");
-      canvas.requestRenderAll();
-      const delta = new fabric.Point(event.e.movementX, event.e.movementY);
-      canvas.relativePan(delta);
-    }
-  });
-
-  canvas.on("mouse:down", (event) => {
-    mousePressed = true;
-
-    currentMode === modes.pan ?? canvas.setCursor("grab");
-    canvas.requestRenderAll();
-  });
-  canvas.on("mouse:up", (event) => {
-    mousePressed = false;
-    canvas.setCursor("default");
-    canvas.requestRenderAll();
-  });
-};
-setPanEvent(canvas);
-
-// Add an event listener to the document object to listen to the delete key pressed (in Windows it's named "Backspace" key, in mac it's named "delete"), and it will delete current selected obejct on canvas
+// 在 document 上监听 "keydown"事件，在canvas上删除被激活的对象
 document.addEventListener("keydown", function (event) {
   const { key } = event;
   if (key === "Backspace") {
@@ -139,10 +100,7 @@ export function showCurrentLayerInfo(layerData, newOrder) {
   const layerList = document.querySelector("#layer-list");
   layerList.innerHTML = "";
   const obejcts = layerData ? layerData : canvas.getObjects();
-  // console.log('obejcts.length:', obejcts.length)
-  // console.log(obejcts)
   if (obejcts[0] === undefined) {
-    // console.log(obejcts.length)
     return;
   }
   obejcts.forEach((obejct, index) => {
@@ -161,17 +119,19 @@ export function showCurrentLayerInfo(layerData, newOrder) {
   });
   makeListItemsDraggable();
 }
+
 document.querySelector("#container ul").addEventListener("click", (e) => {
   if (e.target.dataset.label === "delete") {
     const index = e.target.closest("li").dataset.index;
     deleteLayerByIndex(index);
   }
 });
+
 export function deleteLayerByIndex(index) {
   canvas.remove(canvas.getObjects()[index]);
   updateHistory();
   canvas.renderAll();
-  console.log(canvas.getObjects());
+
   setLayerData(canvas.getObjects());
   showCurrentLayerInfo(layerData);
 }

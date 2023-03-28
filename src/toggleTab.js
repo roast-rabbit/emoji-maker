@@ -3,7 +3,7 @@ import { updateHistory } from "./undo.js";
 
 const tabs = document.querySelectorAll(".tab");
 
-const secondaryTabs = document.querySelectorAll(".secondary-tab");
+// const secondaryTabs = document.querySelectorAll(".secondary-tab");
 
 const tabContents = document.querySelectorAll(".tab-content");
 
@@ -37,19 +37,19 @@ tabs.forEach((tab) => {
   });
 });
 
-const secondaryTabContents = document.querySelectorAll(".secondary-tab-content");
-secondaryTabs.forEach(function (secondaryTab) {
-  secondaryTab.addEventListener("click", () => {
-    secondaryTabs.forEach((secondaryTab) => {
-      secondaryTab.classList.remove("active");
-    });
+// const secondaryTabContents = document.querySelectorAll(".secondary-tab-content");
+// secondaryTabs.forEach(function (secondaryTab) {
+//   secondaryTab.addEventListener("click", () => {
+//     secondaryTabs.forEach((secondaryTab) => {
+//       secondaryTab.classList.remove("active");
+//     });
 
-    secondaryTabContents.forEach((secondaryTabContent) => {
-      secondaryTabContent.classList.remove("active");
-      if (secondaryTabContent.dataset.label === secondaryTab.dataset.label) {
-        secondaryTabContent.classList.add("active");
-      }
-    });
-    secondaryTab.classList.add("active");
-  });
-});
+//     secondaryTabContents.forEach((secondaryTabContent) => {
+//       secondaryTabContent.classList.remove("active");
+//       if (secondaryTabContent.dataset.label === secondaryTab.dataset.label) {
+//         secondaryTabContent.classList.add("active");
+//       }
+//     });
+//     secondaryTab.classList.add("active");
+//   });
+// });
