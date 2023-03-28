@@ -57,6 +57,10 @@ const config = {
           from: path.resolve(__dirname, "src/maker-3-data.json"),
           to: path.resolve(__dirname, "dist/maker-3-data.json"),
         },
+        {
+          from: path.resolve(__dirname, "src/icons.json"),
+          to: path.resolve(__dirname, "dist/icons.json"),
+        },
       ],
     }),
     // new WebpackObfuscator({

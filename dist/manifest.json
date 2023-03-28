@@ -1,11 +1,11 @@
 {
-  "main.css": "auto/main06e92f69447f199ed6cc.css",
-  "main.js": "auto/bundle06e92f69447f199ed6cc.js",
-  "index.html": "auto/index.html",
+  "main.css": "auto/mainabe31c796d1ed285113c.css",
+  "main.js": "auto/bundleabe31c796d1ed285113c.js",
   "dict-web.css": "auto/dict-web.css",
   "jquery-2.1.4.min.js": "auto/jquery-2.1.4.min.js",
-  "index1.js": "auto/index1.js",
+  "index.html": "auto/index.html",
   "maker-2-data.json": "auto/maker-2-data.json",
+  "index1.js": "auto/index1.js",
   "maker-3-data.json": "auto/maker-3-data.json",
   "maker-1-data.json": "auto/maker-1-data.json",
   "assets/hand/hand-28.svg": "auto/assets/hand/hand-28.svg",
@@ -18,6 +18,7 @@
   "positionData.json": "auto/positionData.json",
   "assets/body/body-27.svg": "auto/assets/body/body-27.svg",
   "assets/decorations/decorations-39.svg": "auto/assets/decorations/decorations-39.svg",
+  "icons.json": "auto/icons.json",
   "assets/body/body-28.svg": "auto/assets/body/body-28.svg",
   "assets/body/body-26.svg": "auto/assets/body/body-26.svg",
   "assets/hand/hand-8.svg": "auto/assets/hand/hand-8.svg",
@@ -246,7 +247,5 @@
   "assets/sweat/sweat-0.svg": "auto/assets/sweat/sweat-0.svg",
   "assets/mouth/mouth-24.svg": "auto/assets/mouth/mouth-24.svg",
   "assets/droplet/droplet-3.svg": "auto/assets/droplet/droplet-3.svg",
-  "assets/face/face-3.svg": "auto/assets/face/face-3.svg",
-  "maincss.map": "auto/main06e92f69447f199ed6cc.css.map",
-  "bundljs.map": "auto/bundle06e92f69447f199ed6cc.js.map"
+  "assets/face/face-3.svg": "auto/assets/face/face-3.svg"
 }

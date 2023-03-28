@@ -64,10 +64,7 @@ export function updateCanvas(newLayerData) {
   updateHistory();
 }
 
-// positionData 读取的是positionData.json 里面的数据
-let positionData;
-
-loadPositionData(positionData, canvas);
+loadPositionData(canvas);
 
 // layerData is a global object keeping track when all the layer info changes
 export let layerData;

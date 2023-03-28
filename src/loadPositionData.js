@@ -1,10 +1,14 @@
 import loadSingleSVG from "./loadSingleSVG.js";
 import { renderAssetMenu } from "./renderAssetMenu.js";
 
-export const loadPositionData = async function (positionData, canvas) {
-  const res = await fetch("./positionData.json");
-  positionData = await res.json();
-  renderAssetMenu(positionData);
+export const loadPositionData = async function (canvas) {
+  const [PositionDataRes, iconsRes] = await Promise.all([
+    fetch("./positionData.json"),
+    fetch("./icons.json"),
+  ]);
+  const [positionData, iconsData] = await Promise.all([PositionDataRes.json(), iconsRes.json()]);
+
+  renderAssetMenu(positionData, iconsData);
 
   // attach event listeners to each button
   const buttons = document.querySelectorAll("button.shape");
