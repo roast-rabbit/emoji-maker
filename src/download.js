@@ -116,7 +116,9 @@ function renderCanvasFromJson(jsonData) {
 }
 
 export async function readData(id) {
-  return fetch(`./maker-${id}-data.json`)
+  var date = id.slice(0, 5);
+  var t = id.slice(6);
+  return fetch(`/maker/${date}/maker-${t}-data.json`)
     .then((res) => {
       if (res.status === 404) {
         throw new Error("file not found");
