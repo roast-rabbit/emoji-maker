@@ -1,1 +1,783 @@
-var currentTheme="";!function(){function e(e){localStorage.setItem("theme",e),document.body.classList["dark-mode"===e?"add":"remove"]("dark-mode")}$(".toggleTheme").change((function(){"dark-mode"===localStorage.getItem("theme")?e("light-mode"):e("dark-mode")})),$(".night_mode_menu").click((function(){"dark-mode"===localStorage.getItem("theme")?(e("light-mode"),$(".toggleTheme").prop("checked",!1)):(e("dark-mode"),$(".toggleTheme").prop("checked",!0))})),"dark-mode"===localStorage.getItem("theme")?$(".toggleTheme").prop("checked",!0):$(".toggleTheme").prop("checked",!1)}();var popular_scroll=!0,language_code="",user_collect=2,user_collect_data="",emoji_type_arr={B:!0,C:!0,D:!0,E:!0,F:!0,G:!0,H:!0,I:!0,J:!0},emoji_categories_arr={2:"B",3:"C",4:"D",5:"E",6:"F",7:"G",8:"H",9:"I",10:"J"},emoji_status=2,emoji_image_status=2,emoji_platform_status=2,comment_right_scroll=!0,group_right_scroll=!0,blog_right_scroll=!0,image_version_scroll=!0,categories_status=2,emoji_info_status=!0,tags_relations_status=!0,sentiment_position_status=!0,emoji_mix=2,emoji_mix_like=2,set_mix_select="",set_mix_data="";function get_left_categories(e,t){$.ajax({url:"/"+language_code+"/get-left-categories",data:{language_code,categories:e},type:"post",dataType:"json",success:function(e){200==e.code&&(t.parents("li").append(e.data),t.attr("loaded","yes"),t.html('<i class="iconfont iconminus-circle text_silver pointer"></i>'),t.parents("li").addClass("active").siblings().removeClass("active"),t.parents("li").find(".submenu_toggle>li").css("max-height","2rem")),categories_status=2}})}function get_image_version(e,t){$.ajax({url:"/"+language_code+"/get-image-version",data:{language_code,brand:e,version:t},type:"post",dataType:"json",success:function(e){200==e.code&&($(".image_version_box").append(e.data),$(".loading_more").addClass("hide"))},error:function(){image_version_scroll=!0}})}function get_emoji_info(e,t=""){$.ajax({url:"/"+language_code+"/get-emoji-info",data:{emoji_symbol:e,type:t},type:"get",dataType:"json",success:function(e){200==e.code&&("tags"==t?($(".tag_cloud_svg").html(e.data.tag_cloud),$(".tag_cloud_url").attr("href",e.data.tag_url),$(".relation_chart_svg").html(e.data.relation_chart),$(".relation_chart_url").attr("href",e.data.relation_url),$(".tag_relation_display").before(e.data.tag_relation_display)):"sentiment"==t&&$(".sentiment_position_content").html(e.data.sentiment))},error:function(){emoji_info_status=!0,"tags"==t?tags_relations_status=!0:"sentiment"==t&&(sentiment_position_status=!0)}})}function get_emoji_list(e,t="",o=""){$.ajax({url:"/"+language_code+"/get-all-emoji-list",data:{type:e},type:"get",dataType:"json",success:function(e){if(200==e.code){for(var a in $(".emoji_list_box").append(e.data),$(".loading_more").addClass("hide"),emoji_categories_arr)$(".emoji_card_nav li").find(".categories-"+emoji_categories_arr[a]).attr("href","#categories-"+emoji_categories_arr[a]);""!=t&&($(".emoji_card_nav li .categories-"+t).find(".emoji_font").html('<span class="emoji_font line">'+o+"</span>"),location.hash="#categories-"+t)}},error:function(){emoji_status=2}})}function get_all_image_emoji_platform(e,t){$.ajax({url:"/"+language_code+"/get-all-image-emoji-platform",data:{brand:e,type:t,cache:"1d"},type:"get",dataType:"json",success:function(e){200==e.code&&($(".emoji_image_box").append(e.data),$(".loading_more").addClass("hide"))},error:function(){emoji_image_status=2}})}function get_platform_image_list(e){$.ajax({url:"/"+language_code+"/get-platform-image-list",data:{brand:e,cache:"1d"},type:"get",dataType:"json",success:function(e){200==e.code&&($(".emoji_image_box").append(e.data),$(".loading_more").addClass("hide"))},error:function(){emoji_platform_status=2}})}function get_popular_emoji(e){Date.parse(new Date);$.ajax({url:"/"+language_code+"/get-popular-emoji",data:{cache:"4h"},type:"get",dataType:"json",success:function(e){200==e.code&&($(".popular_emoji .popular_list").html(e.data.emojis),$(".popular_list a").attr("title",e.data.alert),$("#popular_emoji_update").attr("data-update",e.data.update),$("#popular_emoji_update").text(e.data.alert),popular_scroll=!1)},error:function(){popular_scroll=!0}})}function get_user_info(){var e=Date.parse(new Date);$.ajax({url:"/"+language_code+"/get-user-info",data:{timestamp:e},type:"post",dataType:"json",success:function(e){200==e.code?($(".nav_switch_box a.user_center").html(e.data.emoji_head),$(".nav_switch_box a.user_center").addClass("online"),$(".nav_switch_box details summary").html(e.data.emoji_head),$(".nav_switch_box details").addClass("online")):($(".nav_switch_box a.user_center").html('<i class="iconfont iconuser"></i>'),$(".nav_switch_box a.user_center").removeClass("online"),$(".nav_switch_box details summary").html('<i class="iconfont iconuser no-rotate"></i>'),$(".nav_switch_box details").removeClass("online")),$(".nav_switch_box a.user_center").attr("href",e.data.href),$(".nav_switch_box>details>ul>div").before(e.data.html)}})}function cancel_collect(e,t,o){var a=Date.parse(new Date);$.ajax({url:"/en/collect",data:{timestamp:a,act:"post",cmt_id:e,page_type:t},type:"post",dataType:"json",success:function(e){if(200==e.code)if(o.hasClass("cancel_collect"))o.parents(".col.mb_1").remove();else if(o.hasClass("collect_list")){if(1==e.data.is_collect)var t='<i class="emoji_font line" style="filter: grayscale(0);">⭐️</i>';else t='<i class="emoji_font line" style="filter: grayscale(1);">⭐️</i>';o.find("div").html(t)}set_toast_off("post",e.msg),user_collect=2}})}function get_user_collect(e,t){$.ajax({url:"/"+language_code+"/get-user-collect",data:{type:e},type:"post",dataType:"json",success:function(e){200==e.code&&(user_collect_data=e.data,set_collect_select(e.data,t))}})}function set_collect_select(e,t=""){t?$(".categories-"+t+" .collect_list").each((function(){var t=$(this),o=$(this).data("cmt_id");o+="",-1!=$.inArray(o,e)&&t.find("i").attr("style","filter: grayscale(0);")})):$(".collect_list").each((function(){var t=$(this),o=$(this).data("cmt_id");o+="",-1!=$.inArray(o,e)&&t.find("i").attr("style","filter: grayscale(0);")}))}function get_history_record(e){if("clear"==e&&(localStorage.removeItem("history_"+language_code),$("#selction-ajax .history_record_box").addClass("hide"),$("#selction-ajax .history_record").empty()),"get"==e){var t=localStorage.getItem("history_"+language_code);if(null===t)return $("#selction-ajax .history_record_box").addClass("hide"),$("#selction-ajax .history_record").empty(),!1;t=JSON.parse(t);var o="";t.forEach((e=>{o+='<a class="p-x0y0 radius_1 mr_1 text_silver" href="/'+language_code+"/search_results?keywords="+encodeURI(e)+'"><span class="emoji_font line">'+e+"</span></a>"})),$("#selction-ajax .history_record_box").removeClass("hide"),$("#selction-ajax .history_record").html(o)}}function get_right_comment(){var e=new Date;$.ajax({url:"/en/get-right-comment",data:{language_code,cache:"1h"},type:"get",dataType:"json",success:function(t){if(200==t.code){$(".widget_comment_box").html(t.data);var o="/"+language_code+"/comment_lists?t="+e.getTime();$(".widget_comment_box").parent().prev().find("a").attr("href",o),comment_right_scroll=!1}},error:function(){comment_right_scroll=!0}})}function get_right_node(e){$.ajax({url:"/"+language_code+"/get-right-node",data:{type:e,cache:"4h"},type:"get",dataType:"json",success:function(t){200==t.code&&("group"==e?($(".right_special_list").html(t.data),group_right_scroll=!1):($(".right_blog_list").html(t.data),blog_right_scroll=!1))},error:function(){"group"==e?group_right_scroll=!0:blog_right_scroll=!0}})}function scrollCollect(e){if(!scrollfun(".categories-"+e,200))return!1;emoji_type_arr[e]&&(emoji_type_arr[e]=!1,set_collect_select(user_collect_data,e))}function scrollPopular(e){scrollfun(".popular_emoji",200)&&popular_scroll&&(popular_scroll=!1,get_popular_emoji(e))}function scrollRightComment(){scrollfun(".widget_comment_box",200)&&comment_right_scroll&&(comment_right_scroll=!1,get_right_comment())}function scrollRightNode(e){"group"==e?scrollfun(".right_special_list",200)&&group_right_scroll&&(group_right_scroll=!1,get_right_node(e)):scrollfun(".right_blog_list",200)&&blog_right_scroll&&(blog_right_scroll=!1,get_right_node(e))}function scrollEmoji(){scrollfun(".get_emoji_list",100)&&2==emoji_status&&(emoji_status=1,$(".loading_more").removeClass("hide"),get_emoji_list())}function scrollEmojiImage(e,t){scrollfun(".get_emoji_list",100)&&2==emoji_image_status&&(emoji_image_status=1,$(".loading_more").removeClass("hide"),get_all_image_emoji_platform(e,t))}function scrollPlatformImage(e){scrollfun(".get_emoji_list",100)&&2==emoji_platform_status&&(emoji_platform_status=1,$(".loading_more").removeClass("hide"),get_platform_image_list(e))}function scrollImageVserion(e,t){scrollfun(".get_emoji_list",100)&&image_version_scroll&&(image_version_scroll=!1,$(".loading_more").removeClass("hide"),get_image_version(e,t))}function scrollEmojiSentiment(e,t){scrollfun(".sentiment_position_content",100)&&sentiment_position_status&&(sentiment_position_status=!1,get_emoji_info(e,t))}function scrollEmojiTags(e,t){scrollfun(".tag_relation_display",100)&&tags_relations_status&&(tags_relations_status=!1,get_emoji_info(e,t))}function scrollfun(element,offset=100){var a,b,c,d;return d=$(element).offset().top,a=eval(d-offset),b=$(window).scrollTop(),c=$(window).height(),b+c>a}function getUrlFirstParam(e){if(null!==e||""!==e){const o=e.split("https://"),a=o[1].indexOf("/")+1;var t=o[1].substring(a);return-1==t.indexOf("/")?-1==t.indexOf("?")?t:t.split("?")[0]:t.split("/")[0]}return null}function getUrlParam(e){var t=new RegExp("(^|&)"+e+"=([^&]*)(&|$)"),o=window.location.search.substr(1).match(t);return null!=o?decodeURI(o[2]):null}function set_toast_off(e,t=""){if(""==t)return!1;-1!=$.inArray(e,["post","like","report","edit","del"])&&($(".toast-body").find("p").text(t),$(".toast").removeClass("off"),$(".toast").addClass("on"),setTimeout((function(){$(".toast-body").find("p").text(" "),$(".toast").removeClass("on"),$(".toast").addClass("off")}),2e3))}$((function(){var e=window.location.href;-1!=e.indexOf("#")&&(e=e.substring(e.indexOf("#"),-1));var t=$("#popular_emoji_update").data("update");if(language_code=getUrlFirstParam(e),-1==e.indexOf("/copy")&&(scrollPopular(t),scrollRightComment(),scrollRightNode("group"),$(window).scroll((function(){scrollPopular(t),scrollRightComment(),scrollRightNode("group")}))),$(".stick_sidebar_left .btn_menu").click((function(){var e=$(this),t=e.attr("loaded"),o=e.data("categories");if("yes"==t){"active"==e.parents("li").attr("class")?(e.parents("li").removeClass("active"),e.parents("li").find(".submenu_toggle>li").css("max-height","0"),e.html('<i class="iconfont iconplus-circle text_silver pointer"></i>')):(e.parents("ul").find(".submenu_toggle>li").css("max-height","0"),e.parents("ul").find(".btn_menu").html('<i class="iconfont iconplus-circle text_silver pointer"></i>'),e.parents("li").addClass("active").siblings().removeClass("active"),e.parents("li").find(".submenu_toggle>li").css("max-height","2rem"),e.html('<i class="iconfont iconminus-circle text_silver pointer"></i>'))}else{if(1==categories_status||!o)return!1;categories_status=1,e.parents("ul").find(".submenu_toggle>li").css("max-height","0"),e.parents("ul").find(".btn_menu").html('<i class="iconfont iconplus-circle text_silver pointer"></i>'),e.html('<img src="/img/translate-loading.svg" alt="" width="16" height="16">'),get_left_categories(o,e)}})),get_user_info(),$(".cancel_collect,.collect_list").click((function(){if(user_collect<2)return!1;user_collect=1;var e=$(this);cancel_collect(e.data("cmt_id"),e.data("type"),e)})),-1!=e.indexOf("/collect-page/")){var o="";"emoji"==(a=$(".collect_type").data("type"))&&(o="A"),get_user_collect(a,o),$(window).scroll((function(){for(var e in emoji_type_arr)scrollCollect(e)}))}if(get_history_record("get"),$("#selction-ajax .clear_history_record").click((function(){get_history_record("clear")})),-1!=e.indexOf("/search_results")){let e=getUrlParam("keywords");if(!e)return!1;let t=localStorage.getItem("history_"+language_code);t=null==t?[]:JSON.parse(t),-1!=t.indexOf(e)&&t.splice(t.indexOf(e),1),t.unshift(e),localStorage.setItem("history_"+language_code,JSON.stringify(t))}if(-1!=e.indexOf("/all-emojis")){var a="";if(-1!=e.indexOf("?type=")){var i=e.indexOf("?type=");a=e.substring(i+6)}2==emoji_status&&(emoji_status=1,get_emoji_list(a)),scrollEmoji(a),$(window).scroll((function(){scrollEmoji(a)})),$(".emoji_card_nav .card .categories_code").click((function(){var e=$(this).data("categories");if(2==emoji_status){emoji_status=1;var t=$(this).find(".emoji_font").html();$(this).find(".emoji_font").html('<img src="/img/translate-loading.svg" alt="" width="21" height="21">'),get_emoji_list(a,e,t)}else location.hash="#categories-"+e}))}if(-1!=e.indexOf("/image-emoji-platform/")){i=e.indexOf("image-emoji-platform/");-1!=(r=(l=e.substr(i)).indexOf("?"))&&(l=l.substring(r,-1));var s=l.split("/");2==emoji_image_status&&(emoji_image_status=1,get_all_image_emoji_platform(s[1],s[2])),scrollEmojiImage(s[1],s[2]),$(window).scroll((function(){scrollEmojiImage(s[1],s[2])}))}if(-1!=e.indexOf("/platform-")){i=e.indexOf("/platform-");-1!=(r=(l=e.substr(i)).indexOf("?"))&&(l=l.substring(r,-1));s=l.split("-");if(-1!=$.inArray(s[1],["qq","wechat","weibo","baidu","douyin","bilibili","animation"]))return!1;2==emoji_platform_status&&(emoji_platform_status=1,get_platform_image_list(s[1])),scrollPlatformImage(s[1]),$(window).scroll((function(){scrollPlatformImage(s[1])}))}if(-1!=e.indexOf("/image-version-page/")){i=e.indexOf("image-version-page/");-1!=(r=(l=e.substr(i)).indexOf("?"))&&(l=l.substring(r,-1));s=l.split("/");image_version_scroll&&(image_version_scroll=!1,get_image_version(s[1],s[2])),scrollImageVserion(s[1],s[2]),$(window).scroll((function(){scrollImageVserion(s[1],s[2])}))}if(-1!=e.indexOf("/emoji/")){var l,r;i=e.indexOf("emoji/");-1!=(r=(l=e.substr(i)).indexOf("?"))&&(l=l.substring(r,-1)),scrollEmojiSentiment((s=l.split("/"))[1],"sentiment"),scrollEmojiTags(s[1],"tags"),$(window).scroll((function(){scrollEmojiSentiment(s[1],"sentiment"),scrollEmojiTags(s[1],"tags")}))}$("#selectMixOne").click((function(){var e=$("#emoji_image_mix").attr("state"),t=$("#emoji_image_mix").attr("mix");if("on"==e)return!1;$("#selectImageBox").hasClass("hide")?($("#introduceBox").addClass("hide"),$("#selectImageBox").removeClass("hide")):("off"==t&&$("#introduceBox").removeClass("hide"),$("#selectImageBox").addClass("hide")),set_mix_select="selectMixOne",set_mix_data="one"})),$("#selectMixTwo").click((function(){var e=$("#emoji_image_mix").attr("state"),t=$("#emoji_image_mix").attr("mix");if("on"==e)return!1;$("#selectImageBox").hasClass("hide")?($("#introduceBox").addClass("hide"),$("#selectImageBox").removeClass("hide")):("off"==t&&$("#introduceBox").removeClass("hide"),$("#selectImageBox").addClass("hide")),set_mix_select="selectMixTwo",set_mix_data="two"})),$("#selectImageBox .col.emoji").click((function(){var e=$(this).data("type"),t=$(this).data("text"),o="";"emoji"==e&&(o+='<div class="emoji text_shadow" style="font-size: 2.75rem;">'+$(this).find(".fontsize_xyz").text()+"</div>");"image"==e&&(o+='<img src="'+$(this).find("img").attr("src")+'" alt="" width="50" height="50" style="filter: drop-shadow(4px 4px 4px rgb(0 0 0 / 50%));">');$("#"+set_mix_select).html(o),$("#emoji_image_mix").attr("data-"+set_mix_data,t),$("#introduceBox").removeClass("hide"),$("#selectImageBox").addClass("hide")})),$(".mix_like").click((function(){if(emoji_mix_like<2)return!1;emoji_mix_like=1;var e=$(this),t=e.attr("data-id");$.ajax({url:"/en/emoji-fusion-like",data:{id:t,language_code},type:"post",dataType:"json",success:function(t){200==t.code&&e.find(".number").text(t.data.like_number),set_toast_off("post",t.msg),emoji_mix_like=2},error:function(){emoji_mix_like=2}})})),$(".toast-body .iconclose").click((function(){$(".toast-body").find("p").text(" "),$(".toast").removeClass("on"),$(".toast").addClass("off")}))}));
+var currentTheme = "";
+(function () {
+  $(".toggleTheme").change(function () {
+    if (localStorage.getItem("theme") === "dark-mode") {
+      setTheme("light-mode");
+    } else {
+      setTheme("dark-mode");
+    }
+  });
+  $(".night_mode_menu").click(function () {
+    if (localStorage.getItem("theme") === "dark-mode") {
+      setTheme("light-mode");
+      $(".toggleTheme").prop("checked", false);
+    } else {
+      setTheme("dark-mode");
+      $(".toggleTheme").prop("checked", true);
+    }
+  });
+  function setTheme(themeName) {
+    localStorage.setItem("theme", themeName);
+    document.body.classList[themeName === "dark-mode" ? "add" : "remove"]("dark-mode");
+  }
+  if (localStorage.getItem("theme") === "dark-mode") {
+    $(".toggleTheme").prop("checked", true);
+  } else {
+    $(".toggleTheme").prop("checked", false);
+  }
+})();
+var popular_scroll = true;
+var language_code = "";
+var user_collect = 2;
+var user_collect_data = "";
+var emoji_type_arr = {
+  B: true,
+  C: true,
+  D: true,
+  E: true,
+  F: true,
+  G: true,
+  H: true,
+  I: true,
+  J: true,
+};
+var emoji_categories_arr = {
+  2: "B",
+  3: "C",
+  4: "D",
+  5: "E",
+  6: "F",
+  7: "G",
+  8: "H",
+  9: "I",
+  10: "J",
+};
+var emoji_status = 2;
+var emoji_image_status = 2;
+var emoji_platform_status = 2;
+var comment_right_scroll = true;
+var group_right_scroll = true;
+var blog_right_scroll = true;
+var image_version_scroll = true;
+var categories_status = 2;
+var emoji_info_status = true;
+var tags_relations_status = true;
+var sentiment_position_status = true;
+var emoji_mix = 2;
+var emoji_mix_like = 2;
+var set_mix_select = "";
+var set_mix_data = "";
+$(function () {
+  var url = window.location.href;
+  if (url.indexOf("#") != -1) {
+    url = url.substring(url.indexOf("#"), -1);
+  }
+  var popular_update = $("#popular_emoji_update").data("update");
+  language_code = getUrlFirstParam(url);
+  if (url.indexOf("/copy") == -1) {
+    scrollPopular(popular_update);
+    scrollRightComment();
+    scrollRightNode("group");
+    $(window).scroll(function () {
+      scrollPopular(popular_update);
+      scrollRightComment();
+      scrollRightNode("group");
+    });
+  }
+  $(".stick_sidebar_left .btn_menu").click(function () {
+    var _this = $(this);
+    var loaded = _this.attr("loaded");
+    var categories = _this.data("categories");
+    var loading_html = '<img src="/img/translate-loading.svg" alt="" width="16" height="16">';
+    if (loaded == "yes") {
+      var className = _this.parents("li").attr("class");
+      if (className == "active") {
+        _this.parents("li").removeClass("active");
+        _this.parents("li").find(".submenu_toggle>li").css("max-height", "0");
+        _this.html('<i class="iconfont iconplus-circle text_silver pointer"></i>');
+      } else {
+        _this.parents("ul").find(".submenu_toggle>li").css("max-height", "0");
+        _this
+          .parents("ul")
+          .find(".btn_menu")
+          .html('<i class="iconfont iconplus-circle text_silver pointer"></i>');
+        _this.parents("li").addClass("active").siblings().removeClass("active");
+        _this.parents("li").find(".submenu_toggle>li").css("max-height", "2rem");
+        _this.html('<i class="iconfont iconminus-circle text_silver pointer"></i>');
+      }
+    } else {
+      if (categories_status == 1 || !categories) {
+        return false;
+      }
+      categories_status = 1;
+      _this.parents("ul").find(".submenu_toggle>li").css("max-height", "0");
+      _this
+        .parents("ul")
+        .find(".btn_menu")
+        .html('<i class="iconfont iconplus-circle text_silver pointer"></i>');
+      _this.html(loading_html);
+      get_left_categories(categories, _this);
+    }
+  });
+  get_user_info();
+  $(".cancel_collect,.collect_list").click(function () {
+    if (user_collect < 2) {
+      return false;
+    }
+    user_collect = 1;
+    var _this = $(this);
+    var cmt_id = _this.data("cmt_id");
+    var type = _this.data("type");
+    cancel_collect(cmt_id, type, _this);
+  });
+  if (url.indexOf("/collect-page/") != -1) {
+    var id = "";
+    var type = $(".collect_type").data("type");
+    if (type == "emoji") {
+      id = "A";
+    }
+    get_user_collect(type, id);
+    $(window).scroll(function () {
+      for (var key in emoji_type_arr) {
+        scrollCollect(key);
+      }
+    });
+  }
+  get_history_record("get");
+  $("#selction-ajax .clear_history_record").click(function () {
+    get_history_record("clear");
+  });
+  if (url.indexOf("/search_results") != -1) {
+    let value = getUrlParam("keywords");
+    if (!value) return false;
+    let history = localStorage.getItem("history_" + language_code);
+    if (history == null) {
+      history = [];
+    } else {
+      history = JSON.parse(history);
+    }
+    if (history.indexOf(value) != -1) {
+      history.splice(history.indexOf(value), 1);
+    }
+    history.unshift(value);
+    localStorage.setItem("history_" + language_code, JSON.stringify(history));
+  }
+  if (url.indexOf("/all-emojis") != -1) {
+    var type = "";
+    if (url.indexOf("?type=") != -1) {
+      var index = url.indexOf("?type=");
+      var type = url.substring(index + 6);
+    }
+    if (emoji_status == 2) {
+      emoji_status = 1;
+      get_emoji_list(type);
+    }
+    scrollEmoji(type);
+    $(window).scroll(function () {
+      scrollEmoji(type);
+    });
+    $(".emoji_card_nav .card .categories_code").click(function () {
+      var categories_code = $(this).data("categories");
+      if (emoji_status == 2) {
+        emoji_status = 1;
+        var emoji_categories = $(this).find(".emoji_font").html();
+        var loading_html = '<img src="/img/translate-loading.svg" alt="" width="21" height="21">';
+        $(this).find(".emoji_font").html(loading_html);
+        get_emoji_list(type, categories_code, emoji_categories);
+      } else {
+        location.hash = "#categories-" + categories_code;
+      }
+    });
+  }
+  if (url.indexOf("/image-emoji-platform/") != -1) {
+    var index = url.indexOf("image-emoji-platform/");
+    var str = url.substr(index);
+    var param = str.indexOf("?");
+    if (param != -1) {
+      str = str.substring(param, -1);
+    }
+    var arr = str.split("/");
+    if (emoji_image_status == 2) {
+      emoji_image_status = 1;
+      get_all_image_emoji_platform(arr[1], arr[2]);
+    }
+    scrollEmojiImage(arr[1], arr[2]);
+    $(window).scroll(function () {
+      scrollEmojiImage(arr[1], arr[2]);
+    });
+  }
+  if (url.indexOf("/platform-") != -1) {
+    var index = url.indexOf("/platform-");
+    var str = url.substr(index);
+    var param = str.indexOf("?");
+    if (param != -1) {
+      str = str.substring(param, -1);
+    }
+    var arr = str.split("-");
+    if (
+      $.inArray(arr[1], ["qq", "wechat", "weibo", "baidu", "douyin", "bilibili", "animation"]) != -1
+    ) {
+      return false;
+    }
+    if (emoji_platform_status == 2) {
+      emoji_platform_status = 1;
+      get_platform_image_list(arr[1]);
+    }
+    scrollPlatformImage(arr[1]);
+    $(window).scroll(function () {
+      scrollPlatformImage(arr[1]);
+    });
+  }
+  if (url.indexOf("/image-version-page/") != -1) {
+    var index = url.indexOf("image-version-page/");
+    var str = url.substr(index);
+    var param = str.indexOf("?");
+    if (param != -1) {
+      str = str.substring(param, -1);
+    }
+    var arr = str.split("/");
+    if (image_version_scroll) {
+      image_version_scroll = false;
+      get_image_version(arr[1], arr[2]);
+    }
+    scrollImageVserion(arr[1], arr[2]);
+    $(window).scroll(function () {
+      scrollImageVserion(arr[1], arr[2]);
+    });
+  }
+  if (url.indexOf("/emoji/") != -1) {
+    var index = url.indexOf("emoji/");
+    var str = url.substr(index);
+    var param = str.indexOf("?");
+    if (param != -1) {
+      str = str.substring(param, -1);
+    }
+    var arr = str.split("/");
+    scrollEmojiSentiment(arr[1], "sentiment");
+    scrollEmojiTags(arr[1], "tags");
+    $(window).scroll(function () {
+      scrollEmojiSentiment(arr[1], "sentiment");
+      scrollEmojiTags(arr[1], "tags");
+    });
+  }
+  $("#selectMixOne").click(function () {
+    var state = $("#emoji_image_mix").attr("state");
+    var mix = $("#emoji_image_mix").attr("mix");
+    if (state == "on") return false;
+    if ($("#selectImageBox").hasClass("hide")) {
+      $("#introduceBox").addClass("hide");
+      $("#selectImageBox").removeClass("hide");
+    } else {
+      if (mix == "off") {
+        $("#introduceBox").removeClass("hide");
+      }
+      $("#selectImageBox").addClass("hide");
+    }
+    set_mix_select = "selectMixOne";
+    set_mix_data = "one";
+  });
+  $("#selectMixTwo").click(function () {
+    var state = $("#emoji_image_mix").attr("state");
+    var mix = $("#emoji_image_mix").attr("mix");
+    if (state == "on") return false;
+    if ($("#selectImageBox").hasClass("hide")) {
+      $("#introduceBox").addClass("hide");
+      $("#selectImageBox").removeClass("hide");
+    } else {
+      if (mix == "off") {
+        $("#introduceBox").removeClass("hide");
+      }
+      $("#selectImageBox").addClass("hide");
+    }
+    set_mix_select = "selectMixTwo";
+    set_mix_data = "two";
+  });
+  $("#selectImageBox .col.emoji").click(function () {
+    var type = $(this).data("type");
+    var text = $(this).data("text");
+    var html = "";
+    if (type == "emoji") {
+      var emoji_symbol = $(this).find(".fontsize_xyz").text();
+      html +=
+        '<div class="emoji text_shadow" style="font-size: 2.75rem;">' + emoji_symbol + "</div>";
+    }
+    if (type == "image") {
+      var src = $(this).find("img").attr("src");
+      html +=
+        '<img src="' +
+        src +
+        '" alt="" width="50" height="50" style="filter: drop-shadow(4px 4px 4px rgb(0 0 0 / 50%));">';
+    }
+    $("#" + set_mix_select).html(html);
+    $("#emoji_image_mix").attr("data-" + set_mix_data, text);
+    $("#introduceBox").removeClass("hide");
+    $("#selectImageBox").addClass("hide");
+  });
+  $(".mix_like").click(function () {
+    if (emoji_mix_like < 2) return false;
+    emoji_mix_like = 1;
+    var _this = $(this);
+    var id = _this.attr("data-id");
+    $.ajax({
+      url: "/en/emoji-fusion-like",
+      data: { id: id, language_code: language_code },
+      type: "post",
+      dataType: "json",
+      success: function (msg) {
+        if (msg.code == 200) {
+          _this.find(".number").text(msg.data.like_number);
+        }
+        set_toast_off("post", msg.msg);
+        emoji_mix_like = 2;
+      },
+      error: function () {
+        emoji_mix_like = 2;
+      },
+    });
+  });
+  $(".toast-body .iconclose").click(function () {
+    $(".toast-body").find("p").text(" ");
+    $(".toast").removeClass("on");
+    $(".toast").addClass("off");
+  });
+});
+function get_left_categories(categories, obj) {
+  $.ajax({
+    url: "/" + language_code + "/get-left-categories",
+    data: { language_code: language_code, categories: categories },
+    type: "post",
+    dataType: "json",
+    success: function (msg) {
+      if (msg.code == 200) {
+        obj.parents("li").append(msg.data);
+        obj.attr("loaded", "yes");
+        obj.html('<i class="iconfont iconminus-circle text_silver pointer"></i>');
+        obj.parents("li").addClass("active").siblings().removeClass("active");
+        obj.parents("li").find(".submenu_toggle>li").css("max-height", "2rem");
+      }
+      categories_status = 2;
+    },
+  });
+}
+function get_image_version(brand, version) {
+  $.ajax({
+    url: "/" + language_code + "/get-image-version",
+    data: { language_code: language_code, brand: brand, version: version },
+    type: "post",
+    dataType: "json",
+    success: function (msg) {
+      if (msg.code == 200) {
+        $(".image_version_box").append(msg.data);
+        $(".loading_more").addClass("hide");
+      }
+    },
+    error: function () {
+      image_version_scroll = true;
+    },
+  });
+}
+function get_emoji_info(emoji_symbol, type = "") {
+  $.ajax({
+    url: "/" + language_code + "/get-emoji-info",
+    data: { emoji_symbol: emoji_symbol, type: type },
+    type: "get",
+    dataType: "json",
+    success: function (msg) {
+      if (msg.code == 200) {
+        if (type == "tags") {
+          $(".tag_cloud_svg").html(msg.data.tag_cloud);
+          $(".tag_cloud_url").attr("href", msg.data.tag_url);
+          $(".relation_chart_svg").html(msg.data.relation_chart);
+          $(".relation_chart_url").attr("href", msg.data.relation_url);
+          $(".tag_relation_display").before(msg.data.tag_relation_display);
+        } else if (type == "sentiment") {
+          $(".sentiment_position_content").html(msg.data.sentiment);
+        }
+      }
+    },
+    error: function () {
+      emoji_info_status = true;
+      if (type == "tags") {
+        tags_relations_status = true;
+      } else if (type == "sentiment") {
+        sentiment_position_status = true;
+      }
+    },
+  });
+}
+function get_emoji_list(type, categories_code = "", emoji_categories = "") {
+  $.ajax({
+    url: "/" + language_code + "/get-all-emoji-list",
+    data: { type: type },
+    type: "get",
+    dataType: "json",
+    success: function (msg) {
+      if (msg.code == 200) {
+        $(".emoji_list_box").append(msg.data);
+        $(".loading_more").addClass("hide");
+        for (var key in emoji_categories_arr) {
+          $(".emoji_card_nav li")
+            .find(".categories-" + emoji_categories_arr[key])
+            .attr("href", "#categories-" + emoji_categories_arr[key]);
+        }
+        if (categories_code != "") {
+          $(".emoji_card_nav li .categories-" + categories_code)
+            .find(".emoji_font")
+            .html('<span class="emoji_font line">' + emoji_categories + "</span>");
+          location.hash = "#categories-" + categories_code;
+        }
+      }
+    },
+    error: function () {
+      emoji_status = 2;
+    },
+  });
+}
+function get_all_image_emoji_platform(brand, type) {
+  $.ajax({
+    url: "/" + language_code + "/get-all-image-emoji-platform",
+    data: { brand: brand, type: type, cache: "1d" },
+    type: "get",
+    dataType: "json",
+    success: function (msg) {
+      if (msg.code == 200) {
+        $(".emoji_image_box").append(msg.data);
+        $(".loading_more").addClass("hide");
+      }
+    },
+    error: function () {
+      emoji_image_status = 2;
+    },
+  });
+}
+function get_platform_image_list(brand) {
+  $.ajax({
+    url: "/" + language_code + "/get-platform-image-list",
+    data: { brand: brand, cache: "1d" },
+    type: "get",
+    dataType: "json",
+    success: function (msg) {
+      if (msg.code == 200) {
+        $(".emoji_image_box").append(msg.data);
+        $(".loading_more").addClass("hide");
+      }
+    },
+    error: function () {
+      emoji_platform_status = 2;
+    },
+  });
+}
+function get_popular_emoji(update) {
+  var timestamp = Date.parse(new Date());
+  $.ajax({
+    url: "/" + language_code + "/get-popular-emoji",
+    data: { cache: "4h" },
+    type: "get",
+    dataType: "json",
+    success: function (msg) {
+      if (msg.code == 200) {
+        $(".popular_emoji .popular_list").html(msg.data.emojis);
+        $(".popular_list a").attr("title", msg.data.alert);
+        $("#popular_emoji_update").attr("data-update", msg.data.update);
+        $("#popular_emoji_update").text(msg.data.alert);
+        popular_scroll = false;
+      }
+    },
+    error: function () {
+      popular_scroll = true;
+    },
+  });
+}
+function get_user_info() {
+  var timestamp = Date.parse(new Date());
+  $.ajax({
+    url: "/" + language_code + "/get-user-info",
+    data: { timestamp: timestamp },
+    type: "post",
+    dataType: "json",
+    success: function (msg) {
+      if (msg.code == 200) {
+        $(".nav_switch_box a.user_center").html(msg.data.emoji_head);
+        $(".nav_switch_box a.user_center").addClass("online");
+        $(".nav_switch_box details summary").html(msg.data.emoji_head);
+        $(".nav_switch_box details").addClass("online");
+      } else {
+        $(".nav_switch_box a.user_center").html('<i class="iconfont iconuser"></i>');
+        $(".nav_switch_box a.user_center").removeClass("online");
+        $(".nav_switch_box details summary").html('<i class="iconfont iconuser no-rotate"></i>');
+        $(".nav_switch_box details").removeClass("online");
+      }
+      $(".nav_switch_box a.user_center").attr("href", msg.data.href);
+      $(".nav_switch_box>details>ul>div").before(msg.data.html);
+    },
+  });
+}
+function cancel_collect(cmt_id, type, obj) {
+  var timestamp = Date.parse(new Date());
+  $.ajax({
+    url: "/en/collect",
+    data: { timestamp: timestamp, act: "post", cmt_id: cmt_id, page_type: type },
+    type: "post",
+    dataType: "json",
+    success: function (msg) {
+      if (msg.code == 200) {
+        if (obj.hasClass("cancel_collect")) {
+          obj.parents(".col.mb_1").remove();
+        } else if (obj.hasClass("collect_list")) {
+          if (msg.data.is_collect == 1) {
+            var text = '<i class="emoji_font line" style="filter: grayscale(0);">⭐️</i>';
+          } else {
+            var text = '<i class="emoji_font line" style="filter: grayscale(1);">⭐️</i>';
+          }
+          obj.find("div").html(text);
+        }
+      }
+      set_toast_off("post", msg.msg);
+      user_collect = 2;
+    },
+  });
+}
+function get_user_collect(type, id) {
+  $.ajax({
+    url: "/" + language_code + "/get-user-collect",
+    data: { type: type },
+    type: "post",
+    dataType: "json",
+    success: function (msg) {
+      if (msg.code == 200) {
+        user_collect_data = msg.data;
+        set_collect_select(msg.data, id);
+      }
+    },
+  });
+}
+function set_collect_select(data, id = "") {
+  if (id) {
+    $(".categories-" + id + " .collect_list").each(function () {
+      var _this = $(this);
+      var cmt_id = $(this).data("cmt_id");
+      cmt_id += "";
+      if ($.inArray(cmt_id, data) != -1) {
+        _this.find("i").attr("style", "filter: grayscale(0);");
+      }
+    });
+  } else {
+    $(".collect_list").each(function () {
+      var _this = $(this);
+      var cmt_id = $(this).data("cmt_id");
+      cmt_id += "";
+      if ($.inArray(cmt_id, data) != -1) {
+        _this.find("i").attr("style", "filter: grayscale(0);");
+      }
+    });
+  }
+}
+function get_history_record(act) {
+  if (act == "clear") {
+    localStorage.removeItem("history_" + language_code);
+    $("#selction-ajax .history_record_box").addClass("hide");
+    $("#selction-ajax .history_record").empty();
+  }
+  if (act == "get") {
+    var history = localStorage.getItem("history_" + language_code);
+    if (history === null) {
+      $("#selction-ajax .history_record_box").addClass("hide");
+      $("#selction-ajax .history_record").empty();
+      return false;
+    }
+    history = JSON.parse(history);
+    var html = "";
+    history.forEach((item) => {
+      html +=
+        '<a class="p-x0y0 radius_1 mr_1 text_silver" href="/' +
+        language_code +
+        "/search_results?keywords=" +
+        encodeURI(item) +
+        '"><span class="emoji_font line">' +
+        item +
+        "</span></a>";
+    });
+    $("#selction-ajax .history_record_box").removeClass("hide");
+    $("#selction-ajax .history_record").html(html);
+  }
+}
+function get_right_comment() {
+  var date = new Date();
+  $.ajax({
+    url: "/en/get-right-comment",
+    data: { language_code: language_code, cache: "1h" },
+    type: "get",
+    dataType: "json",
+    success: function (msg) {
+      if (msg.code == 200) {
+        $(".widget_comment_box").html(msg.data);
+        var href = "/" + language_code + "/comment_lists?t=" + date.getTime();
+        $(".widget_comment_box").parent().prev().find("a").attr("href", href);
+        comment_right_scroll = false;
+      }
+    },
+    error: function () {
+      comment_right_scroll = true;
+    },
+  });
+}
+function get_right_node(type) {
+  $.ajax({
+    url: "/" + language_code + "/get-right-node",
+    data: { type: type, cache: "4h" },
+    type: "get",
+    dataType: "json",
+    success: function (msg) {
+      if (msg.code == 200) {
+        if (type == "group") {
+          $(".right_special_list").html(msg.data);
+          group_right_scroll = false;
+        } else {
+          $(".right_blog_list").html(msg.data);
+          blog_right_scroll = false;
+        }
+      }
+    },
+    error: function () {
+      if (type == "group") {
+        group_right_scroll = true;
+      } else {
+        blog_right_scroll = true;
+      }
+    },
+  });
+}
+function scrollCollect(id) {
+  var res = scrollfun(".categories-" + id, 200);
+  if (!res) return false;
+  if (emoji_type_arr[id]) {
+    emoji_type_arr[id] = false;
+    set_collect_select(user_collect_data, id);
+  }
+}
+function scrollPopular(popular_update) {
+  var res = scrollfun(".popular_emoji", 200);
+  if (res && popular_scroll) {
+    popular_scroll = false;
+    get_popular_emoji(popular_update);
+  }
+}
+function scrollRightComment() {
+  var res = scrollfun(".widget_comment_box", 200);
+  if (res && comment_right_scroll) {
+    comment_right_scroll = false;
+    get_right_comment();
+  }
+}
+function scrollRightNode(type) {
+  if (type == "group") {
+    var res = scrollfun(".right_special_list", 200);
+    if (res && group_right_scroll) {
+      group_right_scroll = false;
+      get_right_node(type);
+    }
+  } else {
+    var res = scrollfun(".right_blog_list", 200);
+    if (res && blog_right_scroll) {
+      blog_right_scroll = false;
+      get_right_node(type);
+    }
+  }
+}
+function scrollEmoji() {
+  var res = scrollfun(".get_emoji_list", 100);
+  if (res && emoji_status == 2) {
+    emoji_status = 1;
+    $(".loading_more").removeClass("hide");
+    get_emoji_list();
+  }
+}
+function scrollEmojiImage(brand, type) {
+  var res = scrollfun(".get_emoji_list", 100);
+  if (res && emoji_image_status == 2) {
+    emoji_image_status = 1;
+    $(".loading_more").removeClass("hide");
+    get_all_image_emoji_platform(brand, type);
+  }
+}
+function scrollPlatformImage(brand) {
+  var res = scrollfun(".get_emoji_list", 100);
+  if (res && emoji_platform_status == 2) {
+    emoji_platform_status = 1;
+    $(".loading_more").removeClass("hide");
+    get_platform_image_list(brand);
+  }
+}
+function scrollImageVserion(brand, version) {
+  var res = scrollfun(".get_emoji_list", 100);
+  if (res && image_version_scroll) {
+    image_version_scroll = false;
+    $(".loading_more").removeClass("hide");
+    get_image_version(brand, version);
+  }
+}
+function scrollEmojiSentiment(emoji, type) {
+  var res = scrollfun(".sentiment_position_content", 100);
+  if (res && sentiment_position_status) {
+    sentiment_position_status = false;
+    get_emoji_info(emoji, type);
+  }
+}
+function scrollEmojiTags(emoji, type) {
+  var res = scrollfun(".tag_relation_display", 100);
+  if (res && tags_relations_status) {
+    tags_relations_status = false;
+    get_emoji_info(emoji, type);
+  }
+}
+function scrollfun(element, offset = 100) {
+  var a, b, c, d;
+  d = $(element).offset().top;
+  a = eval(d - offset);
+  b = $(window).scrollTop();
+  c = $(window).height();
+  if (b + c > a) {
+    return true;
+  } else {
+    return false;
+  }
+}
+function getUrlFirstParam(value) {
+  if (value !== null || value !== "") {
+    const str = value.split("https://");
+    const index = str[1].indexOf("/") + 1;
+    var param = str[1].substring(index);
+    if (param.indexOf("/") == -1) {
+      if (param.indexOf("?") == -1) {
+        return param;
+      } else {
+        return param.split("?")[0];
+      }
+    } else {
+      return param.split("/")[0];
+    }
+  }
+  return null;
+}
+function getUrlParam(name) {
+  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+  var r = window.location.search.substr(1).match(reg);
+  if (r != null) return decodeURI(r[2]);
+  return null;
+}
+function set_toast_off(act, message = "") {
+  if (message == "") {
+    return false;
+  }
+  var arr = ["post", "like", "report", "edit", "del"];
+  if ($.inArray(act, arr) != -1) {
+    $(".toast-body").find("p").text(message);
+    $(".toast").removeClass("off");
+    $(".toast").addClass("on");
+    setTimeout(function () {
+      $(".toast-body").find("p").text(" ");
+      $(".toast").removeClass("on");
+      $(".toast").addClass("off");
+    }, 2000);
+  }
+}

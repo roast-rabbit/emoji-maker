@@ -1,11 +1,11 @@
 {
-  "main.css": "auto/mainabe31c796d1ed285113c.css",
-  "main.js": "auto/bundleabe31c796d1ed285113c.js",
+  "main.css": "auto/main5d1fd9d74bda849d589e.css",
+  "main.js": "auto/bundle5d1fd9d74bda849d589e.js",
+  "index.html": "auto/index.html",
   "dict-web.css": "auto/dict-web.css",
   "jquery-2.1.4.min.js": "auto/jquery-2.1.4.min.js",
-  "index.html": "auto/index.html",
-  "maker-2-data.json": "auto/maker-2-data.json",
   "index1.js": "auto/index1.js",
+  "maker-2-data.json": "auto/maker-2-data.json",
   "maker-3-data.json": "auto/maker-3-data.json",
   "maker-1-data.json": "auto/maker-1-data.json",
   "assets/hand/hand-28.svg": "auto/assets/hand/hand-28.svg",
@@ -247,5 +247,7 @@
   "assets/sweat/sweat-0.svg": "auto/assets/sweat/sweat-0.svg",
   "assets/mouth/mouth-24.svg": "auto/assets/mouth/mouth-24.svg",
   "assets/droplet/droplet-3.svg": "auto/assets/droplet/droplet-3.svg",
-  "assets/face/face-3.svg": "auto/assets/face/face-3.svg"
+  "assets/face/face-3.svg": "auto/assets/face/face-3.svg",
+  "maincss.map": "auto/main5d1fd9d74bda849d589e.css.map",
+  "bundljs.map": "auto/bundle5d1fd9d74bda849d589e.js.map"
 }
