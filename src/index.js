@@ -49,8 +49,10 @@ let id = params.get("id");
 
 if (id) {
   id = parseInt(id);
+  const t = id.slice(6);
+  const tid = id.slice(0, 5);
   updateHistory();
-  DownloadModule.readData(id);
+  DownloadModule.readData(tid, t);
 } else {
   loadSVGs(canvas);
 }

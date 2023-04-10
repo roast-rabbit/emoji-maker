@@ -115,10 +115,10 @@ function renderCanvasFromJson(jsonData) {
   });
 }
 
-export async function readData(id) {
-  var date = id.slice(0, 5);
-  var t = id.slice(6);
-  return fetch(`/maker/${date}/maker-${t}-data.json`)
+// var t = id.slice(6);
+
+export async function readData(id, date) {
+  return fetch(`/maker/${date}/maker-${id}-data.json`)
     .then((res) => {
       if (res.status === 404) {
         throw new Error("file not found");
